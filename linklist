@@ -1,0 +1,138 @@
+/*******************************************************************************
+* File Name          : LinkedList.cpp
+* Description        : It checks and arranges the variable as its index as position
+* Author             : Raj Bhanderi
+* Date               : 09/25/2017
+******************************************************************************
+*/
+// The following code is your starting point for PROG8130 Assignment #1
+
+#include <stdio.h>
+#include <stdlib.h>
+#include "string.h"
+
+// structure/typedef used for holding data
+typedef struct {
+	char name[20];
+	int index;
+} inputData;
+
+// definition of linked list data NodeCount
+typedef struct LinkedListNode {
+	struct LinkedListNode		*ptrNextNode;		// pointer to next node in list (NULL if the end)
+	char						NameData[20];		// the name to be stored (no need to store index)
+} LinkedListNodeDef;
+
+// prototypes
+void AddToLinkedList(LinkedListNodeDef **ptrHead, char *NameData, int DataIndex);
+void PrintLinkedList(LinkedListNodeDef *ptrHead);
+
+
+// make the data positions the last 5 digits of student number
+// for example if my student number ended in 94330 the data will be as supplied
+
+// data used for test
+inputData iData[5] = {
+	{ "car", 1 },
+	{ "Chocolate", 3 },
+	{ "allan", 1 },
+	{ "orange", 3 },
+	{ "fish", 1 }
+};
+
+
+void main(void) {
+	int i;
+
+	// define linked list head
+	struct LinkedListNode		*ptrHead = NULL;
+	ptrHead = (LinkedListNodeDef*)malloc(sizeof(LinkedListNodeDef));
+	ptrHead->ptrNextNode = NULL;
+
+	// Print out the input data
+	printf("Data before Linked List is:\n");
+	for (i = 0; i < 5; i++)
+		printf("%s , %d\n", iData[i].name, iData[i].index);
+	printf("\n");
+
+	// insert the data into Linked List
+	for (i = 0; i < 5; i++)
+		AddToLinkedList(&ptrHead, iData[i].name, iData[i].index);
+
+	// now print out the list in order it is stored starting at head
+	PrintLinkedList(ptrHead);
+}
+
+
+// FUNCTION      : AddToLinkedList()
+// DESCRIPTION   : Creating the new node and checking the position
+// PARAMETERS    : ptrHead, NameData, NameDataIndex
+// RETURNS       : It doesnot return anything
+
+// fill in this function to add linked list NodeCount to provided index location
+void AddToLinkedList(LinkedListNodeDef **ptrHead, char *NameData, int NameDataIndex) {
+	static int NodeCount = 0;			//The number of Nodes in the list
+	LinkedListNodeDef *newNode = NULL;  //The variable is defined for creating new node in the list 
+	LinkedListNodeDef *tempNode = NULL;
+
+	if (NameDataIndex == 0 || NameDataIndex == 1) {                      //it checks for the position 0 and 1
+		newNode = (LinkedListNodeDef*)malloc(sizeof(LinkedListNodeDef)); //assigning a memory allocation for new node
+		strcpy(newNode->NameData, NameData);					         //copies the data name to a new node
+		newNode->ptrNextNode = (*ptrHead)->ptrNextNode;                  //ptrhead is moved to next node created
+		(*ptrHead)->ptrNextNode = newNode;
+		NodeCount++;                                                     //the node is incremented                  
+	}
+	else if (NameDataIndex > NodeCount) {                                //if the position of the node is greater than the count
+		newNode = (LinkedListNodeDef*)malloc(sizeof(LinkedListNodeDef));
+		tempNode = *ptrHead;                                             //ptrhead is moved to the temp node
+		while (tempNode->ptrNextNode != NULL)                            //if the next node is not equal to zero
+		{
+			tempNode = tempNode->ptrNextNode;                            //tempnode is equal to ptrnode
+		}
+		tempNode->ptrNextNode = newNode;                                 //newnode is created 
+		newNode->ptrNextNode = NULL;
+		strcpy(newNode->NameData, NameData);					         //copy NameData the new node in list
+		NodeCount++;
+	}
+	else {
+		tempNode = *ptrHead;                                             //if the node is inbetween 1 and the greatest index
+		newNode = (LinkedListNodeDef*)malloc(sizeof(LinkedListNodeDef)); //it creates a memory location for the new node
+		int counter = 0;
+		for (counter = 0; counter < NameDataIndex - 1; counter++)        //counter is zero and if the position is less than the count
+		{
+			tempNode = tempNode->ptrNextNode;                            //the tempnode indicates to the next node
+		}
+		newNode->ptrNextNode = tempNode->ptrNextNode;                    //tempnode moves to the new node
+		tempNode->ptrNextNode = newNode;
+		strcpy(newNode->NameData, NameData);
+		NodeCount++;
+	}
+}
+
+
+// FUNCTION      : PrintLinkedList()
+// DESCRIPTION   : To print the enitre node withtheir position
+// PARAMETERS    : ptrHead
+// RETURNS       : It doesnot return anything
+
+// print out the linked list starting at the supplied linked list head
+void PrintLinkedList(LinkedListNodeDef *ptrHead) {
+	// you need to add code to print out each node in list starting at the ptrHead until the ptrNextNode is NULL
+	LinkedListNodeDef* temp;
+	temp = ptrHead;
+	//it will print no data when the node is empty
+	if (temp == NULL)                                                   //if there is no data in the ptrhead then the list is empty
+	{
+		printf("The list is empty");                                    //it prints like the list is empty
+	}
+	//it will print the list when nearby node is empty
+	while (temp->ptrNextNode != NULL)                                  //if it not equal to null
+	{
+		temp = temp->ptrNextNode;
+		printf("%s\n", temp->NameData);                                //prints the data in order
+	}
+
+
+
+
+}
